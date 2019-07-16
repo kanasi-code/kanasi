@@ -89,7 +89,7 @@
     </div>
     
         <div id="toc" class="toc-article">
-    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#大纲"><span class="toc-text">大纲</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#kubernetes-介绍"><span class="toc-text">kubernetes 介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#kubernetes-集群架构"><span class="toc-text">kubernetes 集群架构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#kubernetes-的好处"><span class="toc-text">kubernetes 的好处</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#核心组件"><span class="toc-text">核心组件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Service"><span class="toc-text">Service</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#列出所有service"><span class="toc-text">列出所有service</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#pod"><span class="toc-text">pod</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#相关命令"><span class="toc-text">相关命令</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#何时在pod中使用多个容器？"><span class="toc-text">何时在pod中使用多个容器？</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#yaml"><span class="toc-text">yaml</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#标签"><span class="toc-text">标签</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#命令空间"><span class="toc-text">命令空间</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#停止和移除pod"><span class="toc-text">停止和移除pod</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#存活探针（liveness-probe）"><span class="toc-text">存活探针（liveness probe）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#ReplicaSet"><span class="toc-text">ReplicaSet</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#在kubernetes中运行镜像所发生的步骤"><span class="toc-text">在kubernetes中运行镜像所发生的步骤</span></a></li></ol></li></ol></li></ol></li></ol></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#大纲"><span class="toc-text">大纲</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#kubernetes-介绍"><span class="toc-text">kubernetes 介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#kubernetes-集群架构"><span class="toc-text">kubernetes 集群架构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#kubernetes-的好处"><span class="toc-text">kubernetes 的好处</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#核心组件"><span class="toc-text">核心组件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Service"><span class="toc-text">Service</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#列出所有service"><span class="toc-text">列出所有service</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#pod"><span class="toc-text">pod</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#相关命令"><span class="toc-text">相关命令</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#何时在pod中使用多个容器？"><span class="toc-text">何时在pod中使用多个容器？</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#yaml"><span class="toc-text">yaml</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#标签"><span class="toc-text">标签</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#命令空间"><span class="toc-text">命令空间</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#停止和移除pod"><span class="toc-text">停止和移除pod</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#存活探针（liveness-probe）"><span class="toc-text">存活探针（liveness probe）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#ReplicaSet"><span class="toc-text">ReplicaSet</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#在kubernetes中运行镜像所发生的步骤"><span class="toc-text">在kubernetes中运行镜像所发生的步骤</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#服务发现与负载均衡"><span class="toc-text">服务发现与负载均衡</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#在kubernetes-中，服务发现与负载均衡问题主要有两种方式："><span class="toc-text">在kubernetes 中，服务发现与负载均衡问题主要有两种方式：</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Service-1"><span class="toc-text">Service</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Ingress-Controller"><span class="toc-text">Ingress Controller</span></a></li></ol></li></ol></li></ol></li></ol>
 </div>
     
 </div>
@@ -164,8 +164,21 @@
 <li>自动扩容</li>
 </ul>
 <h2 id="核心组件"><a href="#核心组件" class="headerlink" title="核心组件"></a>核心组件</h2><h3 id="Service"><a href="#Service" class="headerlink" title="Service"></a>Service</h3><ul>
-<li>ClusterIP</li>
-<li>LoadBalancer</li>
+<li><p>ClusterIP</p>
+<blockquote>
+<p>Kubernetes 的默认服务，定义一个集群内的服务，集群内的其他应用都可以访问该服务。集群外部无法访问它</p>
+</blockquote>
+</li>
+<li><p>LoadBalancer</p>
+<blockquote>
+<p>LoadBalancer 服务是暴露服务到internet的标准方式。通过在集群中创建一个负载均衡器来暴露对应服务，它将给你一个单独IP，转发所有流量到你的服务。</p>
+</blockquote>
+</li>
+<li><p>NodePort</p>
+<blockquote>
+<p>将外部流量引导到内部服务的最原始方式，在所有节点（虚拟机）上开放一个特定端口，任何发送到该端口的流量都会被转发到对应服务</p>
+</blockquote>
+</li>
 </ul>
 <h5 id="列出所有service"><a href="#列出所有service" class="headerlink" title="列出所有service"></a>列出所有service</h5><blockquote>
 <p>k get services</p>
@@ -182,7 +195,7 @@
 <li>他们代表着一个整体的组件</li>
 <li>他们必须一起进行扩容缩容</li>
 </ul>
-<h5 id="yaml"><a href="#yaml" class="headerlink" title="yaml"></a>yaml</h5><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">V1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">	<span class="attr">name:</span> <span class="string">kubia-manual</span></span><br><span class="line"><span class="attr">spac:</span></span><br><span class="line"><span class="attr">  containers:</span></span><br><span class="line"><span class="attr">  - images:</span> <span class="string">luksa/kubia</span></span><br><span class="line"><span class="attr">    name:</span> <span class="string">kubia</span></span><br><span class="line"><span class="attr">    ports:</span></span><br><span class="line"><span class="attr">    - containerPort:</span> <span class="number">8080</span></span><br><span class="line"><span class="attr">    protocol:</span> <span class="string">TCP</span></span><br></pre></td></tr></table></figure>
+<h5 id="yaml"><a href="#yaml" class="headerlink" title="yaml"></a>yaml</h5><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">V1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line"><span class="attr">  name:</span> <span class="string">kubia-manual</span></span><br><span class="line"><span class="attr">spac:</span></span><br><span class="line"><span class="attr">  containers:</span></span><br><span class="line"><span class="attr">  - images:</span> <span class="string">luksa/kubia</span></span><br><span class="line"><span class="attr">    name:</span> <span class="string">kubia</span></span><br><span class="line"><span class="attr">    ports:</span></span><br><span class="line"><span class="attr">    - containerPort:</span> <span class="number">8080</span></span><br><span class="line"><span class="attr">    protocol:</span> <span class="string">TCP</span></span><br></pre></td></tr></table></figure>
 <h5 id="标签"><a href="#标签" class="headerlink" title="标签"></a>标签</h5><blockquote>
 <p>标签是可以附加到资源的任意键值对，用以选择具有该确切标签的资源，用于快读区分出一组有共同特征的资源</p>
 </blockquote>
@@ -202,7 +215,7 @@
 </blockquote>
 </li>
 <li><p>yaml</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">V1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Namespace</span></span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">	<span class="attr">name:</span> <span class="string">kubia-manual</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">V1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Namespace</span></span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line"><span class="attr">  name:</span> <span class="string">kubia-manual</span></span><br></pre></td></tr></table></figure>
 </li>
 </ul>
 <h5 id="停止和移除pod"><a href="#停止和移除pod" class="headerlink" title="停止和移除pod"></a>停止和移除pod</h5><ul>
@@ -233,7 +246,25 @@
 <li>replica count（副本个数），指定运行的pod的数量</li>
 <li>pod template（pod 模版），用于创建新的副本</li>
 </ul>
-<h5 id="在kubernetes中运行镜像所发生的步骤"><a href="#在kubernetes中运行镜像所发生的步骤" class="headerlink" title="在kubernetes中运行镜像所发生的步骤"></a>在kubernetes中运行镜像所发生的步骤</h5><p><img src="/img/IMG_8589.jpg" alt="IMG_8589"></p>
+<h5 id="在kubernetes中运行镜像所发生的步骤"><a href="#在kubernetes中运行镜像所发生的步骤" class="headerlink" title="在kubernetes中运行镜像所发生的步骤"></a>在kubernetes中运行镜像所发生的步骤</h5><p><img src="/img/IMG_8589.JPG" alt="IMG_8589"></p>
+<h2 id="服务发现与负载均衡"><a href="#服务发现与负载均衡" class="headerlink" title="服务发现与负载均衡"></a>服务发现与负载均衡</h2><h3 id="在kubernetes-中，服务发现与负载均衡问题主要有两种方式："><a href="#在kubernetes-中，服务发现与负载均衡问题主要有两种方式：" class="headerlink" title="在kubernetes 中，服务发现与负载均衡问题主要有两种方式："></a>在kubernetes 中，服务发现与负载均衡问题主要有两种方式：</h3><h4 id="Service-1"><a href="#Service-1" class="headerlink" title="Service"></a>Service</h4><blockquote>
+<p>前面提到，service有三种类型ClusterIP、NodePort、LoadBalancer</p>
+</blockquote>
+<p>这三种类型的服务都可以用来做服务发现，只不过其职责不同：</p>
+<ul>
+<li>ClusterIP 适用于内部服务的发现，会默认分配一个仅集群内部可访问的IP。这样，内部服务可以通过虚拟IP来访问</li>
+<li>NodePort 适用于需要将服务暴露到外部的场景， 服务会在每台虚拟机上绑定一个端口，这样就可以通过<nodeip>:NodePort 的方式来访问该服务</nodeip></li>
+</ul>
+<p><img src="/img/image-20190716201554956.png" alt="image-20190716201554956"></p>
+<ul>
+<li>LoadBalancer 同上，只用于将服务暴露到外部的场景， 不同的是，这种方式需要依赖cloud provider创建一个外部的负载均衡器，并将请求转发到<nodeip>:NodePort 上</nodeip></li>
+</ul>
+<p><img src="/img/image-20190716201543371.png" alt="image-20190716201543371"></p>
+<h4 id="Ingress-Controller"><a href="#Ingress-Controller" class="headerlink" title="Ingress Controller"></a>Ingress Controller</h4><p>Service虽然解决了服务发现和负载均衡的问题，但其有些额外的限制，比如： 对外访问时，NodePort类型需要在外部搭建额外的负载均衡，而LoadBalancer  则要求kubernetes必须跑在cloud provider 上。</p>
+<p>Ingress 就是为了解决这些限制而引入的新资源（并非service的一种），主要用于将服务暴露到cluster外面，并且可以自定义服务的访问策略。</p>
+<p>Ingress 本身并不会自动创建负载均衡器，cluster中需要运行一个ingress controller来根据ingress的定义来管理负载均衡器。</p>
+<p>ingress 原理图：</p>
+<p><img src="/img/image-20190716201523964.png" alt="image-20190716201523964"></p>
 
         
         <br />
