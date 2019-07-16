@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="素亿技术博客">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        kubernetes 学习笔记 - 素亿技术博客
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> Talk is cheap. Show me the code </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar ">
+            <img src="/img/avatar.jpg" />
+        </div>
+        <div class="name">
+            <i>素亿技术博客</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#大纲"><span class="toc-text">大纲</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#kubernetes-介绍"><span class="toc-text">kubernetes 介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#kubernetes-集群架构"><span class="toc-text">kubernetes 集群架构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#kubernetes-的好处"><span class="toc-text">kubernetes 的好处</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#核心组件"><span class="toc-text">核心组件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Service"><span class="toc-text">Service</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#列出所有service"><span class="toc-text">列出所有service</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#pod"><span class="toc-text">pod</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#相关命令"><span class="toc-text">相关命令</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#何时在pod中使用多个容器？"><span class="toc-text">何时在pod中使用多个容器？</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#yaml"><span class="toc-text">yaml</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#标签"><span class="toc-text">标签</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#命令空间"><span class="toc-text">命令空间</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#停止和移除pod"><span class="toc-text">停止和移除pod</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#存活探针（liveness-probe）"><span class="toc-text">存活探针（liveness probe）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#ReplicaSet"><span class="toc-text">ReplicaSet</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#在kubernetes中运行镜像所发生的步骤"><span class="toc-text">在kubernetes中运行镜像所发生的步骤</span></a></li></ol></li></ol></li></ol></li></ol></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> Talk is cheap. Show me the code </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        kubernetes 学习笔记
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2019-07-16 15:52:44</span></span>
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <h1 id="大纲"><a href="#大纲" class="headerlink" title="大纲"></a>大纲</h1><h2 id="kubernetes-介绍"><a href="#kubernetes-介绍" class="headerlink" title="kubernetes 介绍"></a>kubernetes 介绍</h2><h4 id="kubernetes-集群架构"><a href="#kubernetes-集群架构" class="headerlink" title="kubernetes 集群架构"></a>kubernetes 集群架构</h4><ul>
+<li><p>master 节点</p>
+<blockquote>
+<p>控制和管理整个集群系统的控制面板</p>
+</blockquote>
+<ul>
+<li>Kubernetes API 服务器<ul>
+<li>Scheduler  调度器，用于调度你的应用</li>
+</ul>
+</li>
+<li>Controller Manager 执行集群级别的功能，如复制组建、持续跟踪工作节点、处理失败节点</li>
+<li>etcd 可靠的分布式存储，用于持久化集群配置</li>
+</ul>
+</li>
+<li><p>worker 节点</p>
+<blockquote>
+<p>运行容器化应用的机器 </p>
+</blockquote>
+<ul>
+<li>kubelet，与API服务器通信，并管理它所在节点的容器</li>
+<li>Docker/rtk 容器应用</li>
+<li>kube-proxy 负责组件之间的负载均衡网络流量</li>
+</ul>
+</li>
+</ul>
+<h4 id="kubernetes-的好处"><a href="#kubernetes-的好处" class="headerlink" title="kubernetes 的好处"></a>kubernetes 的好处</h4><ul>
+<li>简化应用程序部署</li>
+<li>更好的利用硬件</li>
+<li>健康检查和自修复</li>
+<li>自动扩容</li>
+</ul>
+<h2 id="核心组件"><a href="#核心组件" class="headerlink" title="核心组件"></a>核心组件</h2><h3 id="Service"><a href="#Service" class="headerlink" title="Service"></a>Service</h3><ul>
+<li>ClusterIP</li>
+<li>LoadBalancer</li>
+</ul>
+<h5 id="列出所有service"><a href="#列出所有service" class="headerlink" title="列出所有service"></a>列出所有service</h5><blockquote>
+<p>k get services</p>
+</blockquote>
+<h3 id="pod"><a href="#pod" class="headerlink" title="pod"></a>pod</h3><blockquote>
+<p>一个pod是一组紧密相关的容器，它们总是一起运行在同一个工作节点上，以及同一个Linux命名空间中，每个pod就像一个独立的逻辑机器，拥有自己的IP、主机名、进程等，运行一个独立的应用程序。</p>
+</blockquote>
+<h5 id="相关命令"><a href="#相关命令" class="headerlink" title="相关命令"></a>相关命令</h5><blockquote>
+<p>k get pods  //获取pods</p>
+<p>k logs podname  // 获取指定pod的日志</p>
+</blockquote>
+<h5 id="何时在pod中使用多个容器？"><a href="#何时在pod中使用多个容器？" class="headerlink" title="何时在pod中使用多个容器？"></a>何时在pod中使用多个容器？</h5><ul>
+<li>他们必须要一起运行</li>
+<li>他们代表着一个整体的组件</li>
+<li>他们必须一起进行扩容缩容</li>
+</ul>
+<h5 id="yaml"><a href="#yaml" class="headerlink" title="yaml"></a>yaml</h5><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">V1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Pod</span></span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">	<span class="attr">name:</span> <span class="string">kubia-manual</span></span><br><span class="line"><span class="attr">spac:</span></span><br><span class="line"><span class="attr">  containers:</span></span><br><span class="line"><span class="attr">  - images:</span> <span class="string">luksa/kubia</span></span><br><span class="line"><span class="attr">    name:</span> <span class="string">kubia</span></span><br><span class="line"><span class="attr">    ports:</span></span><br><span class="line"><span class="attr">    - containerPort:</span> <span class="number">8080</span></span><br><span class="line"><span class="attr">    protocol:</span> <span class="string">TCP</span></span><br></pre></td></tr></table></figure>
+<h5 id="标签"><a href="#标签" class="headerlink" title="标签"></a>标签</h5><blockquote>
+<p>标签是可以附加到资源的任意键值对，用以选择具有该确切标签的资源，用于快读区分出一组有共同特征的资源</p>
+</blockquote>
+<ul>
+<li><p>命令</p>
+<blockquote>
+<p>k get pods  - -show-labels //显示pod 对应的标签</p>
+<p>k get pods -l app=pbkd-user-material-task-pbkd //基于特定标签筛选pod</p>
+</blockquote>
+</li>
+</ul>
+<h5 id="命令空间"><a href="#命令空间" class="headerlink" title="命令空间"></a>命令空间</h5><ul>
+<li><p>命令</p>
+<blockquote>
+<p>k  get ns // 列出所有命名空间</p>
+<p>k get pods -n pbkd // 基于命名空间查找pod</p>
+</blockquote>
+</li>
+<li><p>yaml</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">V1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Namespace</span></span><br><span class="line"><span class="attr">metadata:</span> </span><br><span class="line">	<span class="attr">name:</span> <span class="string">kubia-manual</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h5 id="停止和移除pod"><a href="#停止和移除pod" class="headerlink" title="停止和移除pod"></a>停止和移除pod</h5><ul>
+<li><p>命令</p>
+<blockquote>
+<p>k delete pod kubia  //删除单个pod</p>
+<p>k delete pod - - all  //删除命名空间的所有pod</p>
+<p>k delete add - - all //删除所有资源</p>
+</blockquote>
+</li>
+</ul>
+<h5 id="存活探针（liveness-probe）"><a href="#存活探针（liveness-probe）" class="headerlink" title="存活探针（liveness probe）"></a>存活探针（liveness probe）</h5><blockquote>
+<p>kubernetes 通过存活探针检查容器是否还在运行，可以为pod中的每个容器单独指定存活探针，如果检测失败，kubernetes将定期执行探针并重新启动容器</p>
+</blockquote>
+<ul>
+<li>三种探测容器的机制<ul>
+<li>HTTP GET探针，对容器的IP地址执行HTTP GET请求，如果探测器收到响应，并且响应状态码&lt;400 则代表成功，返回状态码错误或没有返回，则代表失败，重新启动容器</li>
+<li>TCP套接字探针尝试与容器指定端口建立TCP连接，如果连接成功建立则探测成功。否则容器重新启动</li>
+<li>Exec 探针在容器内执行任意命令，并检查命令的退出码。如果状态码是0 则探测成功。</li>
+</ul>
+</li>
+</ul>
+<h5 id="ReplicaSet"><a href="#ReplicaSet" class="headerlink" title="ReplicaSet"></a>ReplicaSet</h5><blockquote>
+<p>是一种kubernetes 资源，用户确保pod始终保持运行状态，如果他维护的pod因任何原因消失，则ReplicaSet 会注意到缺少了pod，并创建替代的pod</p>
+</blockquote>
+<ul>
+<li>label selector（标签选择器），用于确定ReplicaSet域内有哪些pod</li>
+<li>replica count（副本个数），指定运行的pod的数量</li>
+<li>pod template（pod 模版），用于创建新的副本</li>
+</ul>
+<h5 id="在kubernetes中运行镜像所发生的步骤"><a href="#在kubernetes中运行镜像所发生的步骤" class="headerlink" title="在kubernetes中运行镜像所发生的步骤"></a>在kubernetes中运行镜像所发生的步骤</h5><p><img src="/Users/dydy/Downloads/IMG_8589.JPG" alt="IMG_8589"></p>
+
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+    </ul>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+        Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+</html>
