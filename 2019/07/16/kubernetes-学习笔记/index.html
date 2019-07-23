@@ -127,6 +127,9 @@
         <span class="attr">发布于：<span>2019-07-16 15:52:44</span></span>
         
         </span>
+            {% if (post.author) %}
+              <a href="{{ url_for('/tags/' + post.author) }}">{{ post.author }}</a>
+            {% endif %}
         <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
 </span>
 </span>

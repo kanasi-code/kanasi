@@ -133,6 +133,9 @@
         
         
         </span>
+            {% if (post.author) %}
+              <a href="{{ url_for('/tags/' + post.author) }}">{{ post.author }}</a>
+            {% endif %}
         <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
 </span>
 </span>
