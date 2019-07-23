@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="素亿技术博客">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        拆解http keep-alive - 素亿技术博客
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> Talk is cheap. Show me the code </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar ">
+            <img src="/img/logo.jpg" />
+        </div>
+        <div class="name">
+            <i>素亿技术博客</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#拆解Http-keep-alive"><span class="toc-text">拆解Http keep-alive</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#服务端如何实现keepalive？（以spring-boot-内嵌的tomcat为例）"><span class="toc-text">服务端如何实现keepalive？（以spring boot 内嵌的tomcat为例）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#先来看看服务端如何处理一个新的http请求的："><span class="toc-text">先来看看服务端如何处理一个新的http请求的：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#哪里处理socket状态呢？"><span class="toc-text">哪里处理socket状态呢？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#什么情况下socket-会返回SocketState-CLOSED？"><span class="toc-text">什么情况下socket 会返回SocketState.CLOSED？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#如果不关闭，服务端会做什么呢？"><span class="toc-text">如果不关闭，服务端会做什么呢？</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#客户端又是如何处理keep-alive呢？"><span class="toc-text">客户端又是如何处理keep-alive呢？</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#by-the-way"><span class="toc-text">by the way</span></a></li></ol></li></ol></li></ol></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> Talk is cheap. Show me the code </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        拆解http keep-alive
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2019-07-23 12:56:25</span></span>
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <h1 id="拆解Http-keep-alive"><a href="#拆解Http-keep-alive" class="headerlink" title="拆解Http keep-alive"></a>拆解Http keep-alive</h1><p>最近正好在研究okhttp 的实现，我们知道okhttp针对http 1.1 及以上版本，是默认开启keepalive的，当开启keepalive之后，新的http请求会复用之前的连接用于发送数据接收响应，那么，这个所谓的复用连接在服务端到底是怎么实现的呢？我们来分析一下</p>
+<h3 id="服务端如何实现keepalive？（以spring-boot-内嵌的tomcat为例）"><a href="#服务端如何实现keepalive？（以spring-boot-内嵌的tomcat为例）" class="headerlink" title="服务端如何实现keepalive？（以spring boot 内嵌的tomcat为例）"></a>服务端如何实现keepalive？（以spring boot 内嵌的tomcat为例）</h3><h4 id="先来看看服务端如何处理一个新的http请求的："><a href="#先来看看服务端如何处理一个新的http请求的：" class="headerlink" title="先来看看服务端如何处理一个新的http请求的："></a>先来看看服务端如何处理一个新的http请求的：</h4><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">NioEndpoint<span class="variable">$Acceptor</span><span class="selector-class">.run</span>  <span class="comment">//轮询处理socket连接，交给processor线程去处理</span></span><br><span class="line">  - NioEndpoint<span class="variable">$Socketprocessor</span><span class="selector-class">.doRun</span>  <span class="comment">//处理socket read事件，并基于处理完成返回的state处理socket</span></span><br><span class="line">    - AbstractProtocol<span class="variable">$ConnectionHandler</span><span class="selector-class">.process</span> <span class="comment">//根据协议选择对应的processor，并基于返回的state状态处理processor</span></span><br><span class="line">      - AbstractProcessorLight.process</span><br><span class="line">        - Http11Processor<span class="selector-class">.service</span> <span class="comment">//实际的协议处理类，会调用CoyoteAdapter.service拿到reponse，并基于返回值设置response code </span></span><br><span class="line">          - CoyoteAdapter.service</span><br><span class="line">          .</span><br><span class="line">          .</span><br><span class="line">          .</span><br></pre></td></tr></table></figure>
+<h4 id="哪里处理socket状态呢？"><a href="#哪里处理socket状态呢？" class="headerlink" title="哪里处理socket状态呢？"></a>哪里处理socket状态呢？</h4><p>从上面的流程中，很容易看出，针对socket的处理实际上是在<code>NioEndpoint$Socketprocessor.doRun</code> 中做的，看看具体实现：</p>
+<figure class="highlight pf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">if (handshake == <span class="number">0</span>) &#123;</span><br><span class="line">    SocketState <span class="keyword">state</span> = SocketState.OPEN;</span><br><span class="line">    // Process the request <span class="keyword">from</span> this socket</span><br><span class="line">    if (event == null) &#123;</span><br><span class="line">        <span class="keyword">state</span> = getHandler().process(socketWrapper, SocketEvent.OPEN_READ);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        <span class="keyword">state</span> = getHandler().process(socketWrapper, event);</span><br><span class="line">    &#125;</span><br><span class="line">    if (<span class="keyword">state</span> == SocketState.CLOSED) &#123;</span><br><span class="line">        close(socket, key);</span><br><span class="line">    &#125;</span><br><span class="line">&#125; else if (handshake == -<span class="number">1</span> ) &#123;</span><br><span class="line">    close(socket, key);</span><br><span class="line">&#125; else if (handshake == SelectionKey.OP_READ)&#123;</span><br><span class="line">    socketWrapper.registerReadInterest();</span><br><span class="line">&#125; else if (handshake == SelectionKey.OP_WRITE)&#123;</span><br><span class="line">    socketWrapper.registerWriteInterest();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从以上代码可以看出，当state 为<code>SocketState.CLOSED</code> 时，服务端会主动close Socket，那么close(socket, key)又做了什么事呢？</p>
+<figure class="highlight processing"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> close(NioChannel socket, SelectionKey <span class="built_in">key</span>) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (socket.getPoller().cancelledKey(<span class="built_in">key</span>) != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="comment">// SocketWrapper (attachment) was removed from the</span></span><br><span class="line">                <span class="comment">// key - recycle the key. This can only happen once</span></span><br><span class="line">                <span class="comment">// per attempted closure so it is used to determine</span></span><br><span class="line">                <span class="comment">// whether or not to return the key to the cache.</span></span><br><span class="line">                <span class="comment">// We do NOT want to do this more than once - see BZ</span></span><br><span class="line">                <span class="comment">// 57340 / 57943.</span></span><br><span class="line">                <span class="keyword">if</span> (running &amp;&amp; !paused) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (!nioChannels.push(socket)) &#123;</span><br><span class="line">                        socket.free();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception x) &#123;</span><br><span class="line">            <span class="built_in">log</span>.error(<span class="string">""</span>,x);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>其实主要是调用了cancelledKey(key)方法，这个方法主要的作用就是调用channel 的close方法，关闭channel。</p>
+<h4 id="什么情况下socket-会返回SocketState-CLOSED？"><a href="#什么情况下socket-会返回SocketState-CLOSED？" class="headerlink" title="什么情况下socket 会返回SocketState.CLOSED？"></a>什么情况下socket 会返回SocketState.CLOSED？</h4><p>从上面的分析，我们知道，当处理线程返回SocketState.CLOSED的时候，客户端与服务端之间建立的channel就会被关闭。那么， 什么情况下，处理线程会反馈SocketState.CLOSED呢？来看看Http11Processor.service方法：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">  <span class="keyword">public</span> SocketState service(SocketWrapperBase&lt;?&gt; socketWrapper)</span><br><span class="line">      throws IOException &#123;</span><br><span class="line">      .</span><br><span class="line">      .</span><br><span class="line">      .</span><br><span class="line">          <span class="comment">// Process the request in the adapter</span></span><br><span class="line">          <span class="keyword">if</span> (!getErrorState().isError()) &#123;</span><br><span class="line">              <span class="keyword">try</span> &#123;</span><br><span class="line">                  rp.setStage(org.apache.coyote.Constants.STAGE_SERVICE);</span><br><span class="line">                  getAdapter().service(request, response);</span><br><span class="line">                  <span class="comment">// Handle when the response was committed before a serious</span></span><br><span class="line">                  <span class="comment">// error occurred.  Throwing a ServletException should both</span></span><br><span class="line">                  <span class="comment">// set the status to 500 and set the errorException.</span></span><br><span class="line">                  <span class="comment">// If we fail here, then the response is likely already</span></span><br><span class="line">                  <span class="comment">// committed, so we can't try and set headers.</span></span><br><span class="line">                  <span class="keyword">if</span>(keepAlive &amp;&amp; !getErrorState().isError() &amp;&amp; !isAsync() &amp;&amp;</span><br><span class="line">                          statusDropsConnection(response.getStatus())) &#123;</span><br><span class="line">                      setErrorState(ErrorState.CLOSE_CLEAN, <span class="literal">null</span>);</span><br><span class="line">                  &#125;</span><br><span class="line">              &#125; <span class="keyword">catch</span> (InterruptedIOException e) &#123;</span><br><span class="line">                  setErrorState(ErrorState.CLOSE_CONNECTION_NOW, e);</span><br><span class="line">              &#125; <span class="keyword">catch</span> (HeadersTooLargeException e) &#123;</span><br><span class="line">                  log.error(sm.getString(<span class="string">"http11processor.request.process"</span>), e);</span><br><span class="line">                  <span class="comment">// The response should not have been committed but check it</span></span><br><span class="line">                  <span class="comment">// anyway to be safe</span></span><br><span class="line">                  <span class="keyword">if</span> (response.isCommitted()) &#123;</span><br><span class="line">                      setErrorState(ErrorState.CLOSE_NOW, e);</span><br><span class="line">                  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                      response.reset();</span><br><span class="line">                      response.setStatus(<span class="number">500</span>);</span><br><span class="line">                      setErrorState(ErrorState.CLOSE_CLEAN, e);</span><br><span class="line">                      response.setHeader(<span class="string">"Connection"</span>, <span class="string">"close"</span>); <span class="comment">// <span class="doctag">TODO:</span> Remove</span></span><br><span class="line">                  &#125;</span><br><span class="line">              &#125; <span class="keyword">catch</span> (Throwable t) &#123;</span><br><span class="line">                  ExceptionUtils.handleThrowable(t);</span><br><span class="line">                  log.error(sm.getString(<span class="string">"http11processor.request.process"</span>), t);</span><br><span class="line">                  <span class="comment">// 500 - Internal Server Error</span></span><br><span class="line">                  response.setStatus(<span class="number">500</span>);</span><br><span class="line">                  setErrorState(ErrorState.CLOSE_CLEAN, t);</span><br><span class="line">                  getAdapter().log(request, response, <span class="number">0</span>);</span><br><span class="line">              &#125;</span><br><span class="line">          &#125;</span><br><span class="line">				.</span><br><span class="line">				.</span><br><span class="line">				.</span><br><span class="line">      <span class="keyword">if</span> (getErrorState().isError() || endpoint.isPaused()) &#123;</span><br><span class="line">          <span class="keyword">return</span> SocketState.CLOSED;</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isAsync()) &#123;</span><br><span class="line">          <span class="keyword">return</span> SocketState.LONG;</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isUpgrade()) &#123;</span><br><span class="line">          <span class="keyword">return</span> SocketState.UPGRADING;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          <span class="keyword">if</span> (sendfileState == SendfileState.PENDING) &#123;</span><br><span class="line">              <span class="keyword">return</span> SocketState.SENDFILE;</span><br><span class="line">          &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">              <span class="keyword">if</span> (openSocket) &#123;</span><br><span class="line">                  <span class="keyword">if</span> (readComplete) &#123;</span><br><span class="line">                      <span class="keyword">return</span> SocketState.OPEN;</span><br><span class="line">                  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                      <span class="keyword">return</span> SocketState.LONG;</span><br><span class="line">                  &#125;</span><br><span class="line">              &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                  <span class="keyword">return</span> SocketState.CLOSED;</span><br><span class="line">              &#125;</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>在服务端处理没有error的情况下，响应会走到最下面的else里面，可以看到，主要是基于</p>
+<p>openSocket来判断返回的socketstate，而openSocket的状态实际上是由keepAlive的值决定的；SO，实际上，服务端就是基于keepalive的值来判断是否在当次请求结束后关闭连接管道。</p>
+<h4 id="如果不关闭，服务端会做什么呢？"><a href="#如果不关闭，服务端会做什么呢？" class="headerlink" title="如果不关闭，服务端会做什么呢？"></a>如果不关闭，服务端会做什么呢？</h4><p>从上面的代码可以看到，会有两种情况：当次请求数据已读取完成、当次请求数据读取未完成</p>
+<ul>
+<li><p>当次请求数据已经读取完成</p>
+<blockquote>
+<p> 返回SocketState.OPEN， 从connections中移除当前socket对应的Processor，并重新给当前socket注册读事件监听</p>
+</blockquote>
+</li>
+<li><p>当次请求数据读取未完成</p>
+<blockquote>
+<p>返回SocketState.LONG，保留socket对应的Processor，并继续为该socket注册读事件监听</p>
+</blockquote>
+</li>
+</ul>
+<p>当服务端保留了socket，在未超时的情况，下一次同一个客户端请求过来，就不需要再进行三次握手了。</p>
+<h3 id="客户端又是如何处理keep-alive呢？"><a href="#客户端又是如何处理keep-alive呢？" class="headerlink" title="客户端又是如何处理keep-alive呢？"></a>客户端又是如何处理keep-alive呢？</h3><blockquote>
+<p>我们以okhttp client 为例，来看看客户端是怎么处理的</p>
+</blockquote>
+<p>如果你了解过okhttp的实现，应该知道okhttp client 的设计是责任链模式。其与服务端的连接建立实际是由ConnectInterceptor 处理的，它会返回一个RealConnection 交给接下来的interceptor去处理。核心处理逻辑是在ExchangeFinder中：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Throws(IOException::class)</span></span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">findConnection</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  connectTimeout: <span class="type">Int</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">  readTimeout: <span class="type">Int</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">  writeTimeout: <span class="type">Int</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">  pingIntervalMillis: <span class="type">Int</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">  connectionRetryEnabled: <span class="type">Boolean</span></span></span></span><br><span class="line"><span class="function"><span class="params">)</span></span>: RealConnection &#123;</span><br><span class="line"> 	</span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (result == <span class="literal">null</span>) &#123;</span><br><span class="line">      <span class="comment">// Attempt to get a connection from the pool.</span></span><br><span class="line">      <span class="keyword">if</span> (connectionPool.transmitterAcquirePooledConnection(address, transmitter, <span class="literal">null</span>, <span class="literal">false</span>)) &#123;</span><br><span class="line">        foundPooledConnection = <span class="literal">true</span></span><br><span class="line">        result = transmitter.connection</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (nextRouteToTry != <span class="literal">null</span>) &#123;</span><br><span class="line">        selectedRoute = nextRouteToTry</span><br><span class="line">        nextRouteToTry = <span class="literal">null</span></span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (retryCurrentRoute()) &#123;</span><br><span class="line">        selectedRoute = transmitter.connection!!.route()</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  toClose?.closeQuietly()</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (releasedConnection != <span class="literal">null</span>) &#123;</span><br><span class="line">    eventListener.connectionReleased(call, releasedConnection!!)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (foundPooledConnection) &#123;</span><br><span class="line">    eventListener.connectionAcquired(call, result!!)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (result != <span class="literal">null</span>) &#123;</span><br><span class="line">    <span class="comment">// If we found an already-allocated or pooled connection, we're done.</span></span><br><span class="line">    <span class="keyword">return</span> result!!</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="comment">// Do TCP + TLS handshakes. This is a blocking operation.</span></span><br><span class="line">  result!!.connect(</span><br><span class="line">      connectTimeout,</span><br><span class="line">      readTimeout,</span><br><span class="line">      writeTimeout,</span><br><span class="line">      pingIntervalMillis,</span><br><span class="line">      connectionRetryEnabled,</span><br><span class="line">      call,</span><br><span class="line">      eventListener</span><br><span class="line">  )</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">return</span> result!!</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>切入到transmitterAcquirePooledConnection方法可以看到，如果请求的Address 一样，且有 有效connection 的情况下，默认会返回上一次的连接， 这样就打到了连接复用的目的，也就不需要再进行三次握手。</p>
+<p>那么， connection什么时候会被删除呢？</p>
+<p>这个就涉及到okhttp的连接管理机制，默认有几种情况：</p>
+<p>1、如果连接是非keep-alive模式的，则服务端会在返回头中带上Connection:close（默认500等场景下也会返回close），此时会直接关闭连接，即从connectionPool中删除connection；</p>
+<p>2、在keep-alive超时的情况下，也会从connectionPool中删除connection；</p>
+<p>3、超过最大空闲连接数量时，从connectionPool中删除connection；</p>
+<h4 id="by-the-way"><a href="#by-the-way" class="headerlink" title="by the way"></a>by the way</h4><p>有人可能会担心说，如果默认开启keep-alive连接复用，会不会导致请求会串行发出去呢，其实不会，在okhttp client中，可以设置默认直接支持的连接数，然后他会判断放点已经建立的连接是否是可用状态，比如未读取完成，未传输完成等，都是不能给相同地址的请求复用的，这个时候就会默认新建一个连接。</p>
+
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+    </ul>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+        Created By <a href="https://hexo.io/">Hexo</a>  Theme <a href="https://github.com/aircloud/hexo-theme-aircloud">AirCloud</a></p>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+</html>
