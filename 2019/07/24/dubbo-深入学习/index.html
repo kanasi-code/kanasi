@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="素亿技术博客">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        dubbo 深入学习 - 素亿技术博客
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> Talk is cheap. Show me the code </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar ">
+            <img src="/img/logo.jpg" />
+        </div>
+        <div class="name">
+            <i>素亿技术博客</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#另一个线程-DefaultFuture-中会独立启动一个线程来"><span class="toc-text">另一个线程(DefaultFuture 中会独立启动一个线程来)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DefaultFuture-get-中阻塞的线程被唤起，继续执行接下来的返回操作"><span class="toc-text">DefaultFuture#get 中阻塞的线程被唤起，继续执行接下来的返回操作</span></a></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> Talk is cheap. Show me the code </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        dubbo 深入学习
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2019-07-24 17:55:51</span></span>
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <p>服务端：</p>
+<ul>
+<li><p>暴露服务提供方：ServiceBean<br>  AnnotationBean.postProcessAfterInitialization   // 生成serviceConfig，将对应的实现类bean以及interfaceClass塞到serviceConfig中，并调用其export 方法<br>  ServiceBean     // 监听ContextRefreshEvent 事件调用ServiceConfig 的export 方法<br>  ServiceConfig   // 1、通过proxyFactory 获取到该接口的代理类；2、通过protocol来暴露invoker<br>  DubboProtocol   // 1、组装url；2、通过Exchangers注册service<br>  Exchangers.export   // 获取Exchanger 调用bind 方法将service 暴露出去<br>  HeaderExchangeServer    // 1、构建HeaderExchangerHandler 用于接口消息的处理；2、调用Transporters 的bind 方法暴露service<br>  Transporters    // 1、获取对应的Transporter，调用其bind 方法暴露service<br>  NettyTransporter    // 1、构建NettyServer，初始化的时候会调用doOpen 方法来</p>
+</li>
+<li><p>启动服务消费放：ReferenceBean<br>  ReferenceBean   //spring在将其注入某个对象中时，会调用去其getObject，getObject方法会调用ReferenceConfig的init方法<br>  ReferenceConfig     // 调用DubboProtocol 封装对应的invoker，invoker持有调用的nettyclient<br>  DubboProtocol   // 创建invoker 实例，并注入nettyclient<br>  ReferenceConfig     // 调用JavassistProxyFactory 的getProxy 方法，创建对应调用service 的代理类，调用代理方法的时候实际调用的就是invocation.invoke</p>
+</li>
+</ul>
+<ul>
+<li>服务配置解析：ServerConfig</li>
+<li>服务启动：NettyServer 配置了 NettyCodecAdapter 作为编解码的handler，NettyHandler作为实际处理请求的handler。</li>
+<li><p>服务调用：</p>
+<ul>
+<li><p>服务消费方发起调用：<br>  InvokerInvocationHandler    // 持有invoker，调用invoker的invoke 方法发起对远程方法的调用<br>  MockClusterInvoker  //  判断是否是mock 调用<br>  AbstractClusterInvoker  // 获取LoadBalance，并向下传递<br>  FailoverClusterInvoker  //基于LB策略获取对应的invoker<br>  InvokerWrapper      // donothing<br>  ProtocolFilterWrapper   // 在实际invoker之前，迭代过滤链<br>  ConsumerContextFilter   // 消费RpcContext 上下文<br>  FuturnFilter    // 针对同步、异步调用做调用后的callback操作<br>  MonitorFilter   // 调用监控数据采集<br>  ListenerInvokerWrapper  // 注入listener<br>  AbstractInvoker     //<br>  DubboInvoker    // 拼装RpcInvocation，并创建DefaultFuture调，如果是同步调用，则调用其get方法阻塞获取调用结果<br>  ReferenceCountExchangeClient    //内部维护一个自增引用计数器，每当对象被引用时，计数器就加1<br>  HeaderExchangeClient    //封装了心跳检测的逻辑<br>  HeaderExchangeChannel   //定义request对象，并将该对象传给NettyClient的send方法，同时实际执行创建DefaultFuture逻辑，将req跟DufaultFuture关联起来<br>  AbstractPeer    //<br>  AsstractClient //获取NettyChannel，调用NettyChannel的send方法<br>  NettyChannel#send    // 调用channel.writeAndFlush将消息写入管道<br>  OneToOneEncoder#handleDownstream    //Netty 编码器抽象类<br>  ExchangeCodec#encode  //实际的编解码器，用与处理基于dubbo协议的编解码</p>
+</li>
+<li><p>服务提供方处理调用：<br>  ExchangeCodec   // 检测请求头中的魔数与规定的魔数是否相等，提前拦截掉非规则的数据包，并对可读字节数进行检测，方式tcp粘包拆包问题<br>  DubboCodec      // 创建request，并通过message解析出对应的 DecodeableRpcInvocation<br>  NettyHandler    // 实现自SimpleChannelHandler 用以接收netty处理的io 事件<br>  HeartbeatHandler.received   // 判断是否是心跳请求，如果是心跳请求则直接返回结果，如果不是则交给AllChannelHandler 处理<br>  AllChannelHandler.received  // 将事件请求派发到线程池中处理<br>  HeaderExchangeHandler.received  // 判断消息体，基于消息体对应的实例做分发处理，同时做消息交换，将请求转换成请求相应模式与同步转异步模式<br>  DubboProtocol$ExchangeHandlerAdapter.reply   // 基于invoker 调用对应service 的invoke方法<br>  ProtocolFilterWrapper$1   // 构建invoker filter chain<br>  AbstractProxyInvoker   // 调用AbstractProxyInvoker 的invoker方法，实际调用抽象的doInvoke 方法<br>  JavassistProxyFactory$AbstractProxyInvoker.doInvoke // 基于内部类实现AbstractProxyInvoker的invoke 方法<br>  Wrapper.invokeMethod    // invokeMethod 实际上就是通过javassist 字节码生成的类代理方法<br>  NettyChannel#send   // 向客户端发起请求返回方法调用结果<br>  ExchangeCodec#encodeResponse //用于将请求的response编码</p>
+</li>
+<li><p>服务消费方处理放回结果：<br>  NettyCodecAdapter$InterDecoder#messageReceived  //接受管道的读取消息时间，调用DubboCodec处理消息<br>  DubboCodec#decodeBody   // 解码返回数据格式，执行反序列化操作，将返回结果保存到RpcResult中</p>
+<h3 id="另一个线程-DefaultFuture-中会独立启动一个线程来"><a href="#另一个线程-DefaultFuture-中会独立启动一个线程来" class="headerlink" title="另一个线程(DefaultFuture 中会独立启动一个线程来)"></a>另一个线程(DefaultFuture 中会独立启动一个线程来)</h3><p>  DefaultFuture#doReceived //线程轮询FUTURES看是否有就绪的请求，当有服务端请求返回时doReceived方法会被唤起，会做一件事：done.signal唤醒用户线程</p>
+<h3 id="DefaultFuture-get-中阻塞的线程被唤起，继续执行接下来的返回操作"><a href="#DefaultFuture-get-中阻塞的线程被唤起，继续执行接下来的返回操作" class="headerlink" title="DefaultFuture#get 中阻塞的线程被唤起，继续执行接下来的返回操作"></a>DefaultFuture#get 中阻塞的线程被唤起，继续执行接下来的返回操作</h3></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>协议解析<ul>
+<li>NettyCodecAdapter 消息的序列化与反序列化，解决tcp 粘包拆包问题<blockquote>
+<p>Dubbo 协议的编解码约定：首先约定16个字节的长度用来存放协议头，调用编号、请求报文长度、序列化方式、版本号等信息全都存在于请求头中；剩余部分用于存放body中，<br>其读取逻辑如下：                                                     </p>
+<pre><code>        将从管道中传入的字节流放入到一个队列中
+                        |                    yes
+判读其可读取长度是否大于等于header+body的长度  ---------&gt; 读取固定长度，进行反序列化
+                        | 
+                        | no
+                        | 
+                        v
+                   等待新的数据过来
+</code></pre></blockquote>
+</li>
+</ul>
+</li>
+</ul>
+
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+    </ul>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+</html>

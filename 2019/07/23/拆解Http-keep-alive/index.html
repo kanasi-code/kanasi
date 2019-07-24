@@ -177,7 +177,7 @@
 <p>2、在keep-alive超时的情况下，也会从connectionPool中删除connection；</p>
 <p>3、超过最大空闲连接数量时，从connectionPool中删除connection；</p>
 <h4 id="by-the-way"><a href="#by-the-way" class="headerlink" title="by the way"></a>by the way</h4><p>有人可能会担心说，如果默认开启keep-alive连接复用，会不会导致请求会串行发出去呢，其实不会，在okhttp client中，可以设置默认直接支持的连接数，然后他会判断放点已经建立的连接是否是可用状态，比如未读取完成，未传输完成等，都是不能给相同地址的请求复用的，这个时候就会默认新建一个连接。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>实际上，在heep协议中设置keep-alive参数后，客户端会在请求头中带上”Connection: keep-alive”，服务端判断到有个参数时，在请求处理完时（一次请求的数据读取完成），在保持连接的open状态，否则关闭连接并在返回的response的header中带上”Connection: close”。客户端在收到服务端的响应时，<br>会判断response的header中是否有携带”Connection: close”，如果有，从连接池中移除当前连接，否则保留当前连接。下次请求同一Address时，会直接基于已有的连接发起，而无需再进行三次握手。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>实际上，在http协议中设置keep-alive参数后，客户端会在请求头中带上”Connection: keep-alive”，服务端判断到有个参数时，在请求处理完时（一次请求的数据读取完成），在保持连接的open状态，否则关闭连接并在返回的response的header中带上”Connection: close”。客户端在收到服务端的响应时，<br>会判断response的header中是否有携带”Connection: close”，如果有，从连接池中移除当前连接，否则保留当前连接。下次请求同一Address时，会直接基于已有的连接发起，而无需再进行三次握手。</p>
 
         
         <br />
