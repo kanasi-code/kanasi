@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="google-site-verification" content="xBT4GhYoi5qRD5tr338pgPM5OWHHIDR6mNg1a3euekI" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="素亿技术博客">
+    <meta name="keyword"  content="">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>
+        
+        微服务在信贷业务的实践 - 素亿技术博客
+        
+    </title>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/aircloud.css">
+    <link rel="stylesheet" href="/css/gitment.css">
+    <!--<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">-->
+    <link href="//at.alicdn.com/t/font_620856_pl6z7sid89qkt9.css" rel="stylesheet" type="text/css">
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+<body>
+
+<div class="site-nav-toggle" id="site-nav-toggle">
+    <button>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+        <span class="btn-bar"></span>
+    </button>
+</div>
+
+<div class="index-about">
+    <i> Talk is cheap. Show me the code </i>
+</div>
+
+<div class="index-container">
+    
+    <div class="index-left">
+        
+<div class="nav" id="nav">
+    <div class="avatar-name">
+        <div class="avatar ">
+            <img src="/img/logo.jpg" />
+        </div>
+        <div class="name">
+            <i>素亿技术博客</i>
+        </div>
+    </div>
+    <div class="contents" id="nav-content">
+        <ul>
+            <li >
+                <a href="/">
+                    <i class="iconfont icon-shouye1"></i>
+                    <span>主页</span>
+                </a>
+            </li>
+            <li >
+                <a href="/tags">
+                    <i class="iconfont icon-biaoqian1"></i>
+                    <span>标签</span>
+                </a>
+            </li>
+            <li >
+                <a href="/archive">
+                    <i class="iconfont icon-guidang2"></i>
+                    <span>存档</span>
+                </a>
+            </li>
+            <li >
+                <a href="/about/">
+                    <i class="iconfont icon-guanyu2"></i>
+                    <span>关于</span>
+                </a>
+            </li>
+            
+            <li>
+                <a id="search">
+                    <i class="iconfont icon-sousuo1"></i>
+                    <span>搜索</span>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+    
+        <div id="toc" class="toc-article">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#信贷架构1-0版-all-in-one，基于spring-mvc-的单体应用"><span class="toc-text">信贷架构1.0版 - all in one，基于spring mvc 的单体应用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#信贷架构2-0版-引入基于springboot-dubbo-的微服务架构"><span class="toc-text">信贷架构2.0版 - 引入基于springboot + dubbo 的微服务架构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#暴力拆分服务带来的问题："><span class="toc-text">暴力拆分服务带来的问题：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#解决方案："><span class="toc-text">解决方案：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#信贷架构3-0版-夯实中台和基础平台能力，弱前台"><span class="toc-text">信贷架构3.0版 - 夯实中台和基础平台能力，弱前台</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-0版本期望解决的问题："><span class="toc-text">3.0版本期望解决的问题：</span></a></li></ol></li></ol>
+</div>
+    
+</div>
+
+
+<div class="search-field" id="search-field">
+    <div class="search-container">
+        <div class="search-input">
+            <span id="esc-search"> <i class="icon-fanhui iconfont"></i></span>
+            <input id="search-input"/>
+            <span id="begin-search">搜索</span>
+        </div>
+        <div class="search-result-container" id="search-result-container">
+
+        </div>
+    </div>
+</div>
+
+        <div class="index-about-mobile">
+            <i> Talk is cheap. Show me the code </i>
+        </div>
+    </div>
+    
+    <div class="index-middle">
+        <!-- Main Content -->
+        
+
+
+<div class="post-container">
+    <div class="post-title">
+        微服务在信贷业务的实践
+    </div>
+
+    <div class="post-meta">
+        <span class="attr">发布于：<span>2019-05-25 11:22:33</span></span>
+        
+        </span>
+        <span class="attr">访问：<span id="busuanzi_value_page_pv"></span>
+</span>
+</span>
+    </div>
+    <div class="post-content ">
+        <h2 id="信贷架构1-0版-all-in-one，基于spring-mvc-的单体应用"><a href="#信贷架构1-0版-all-in-one，基于spring-mvc-的单体应用" class="headerlink" title="信贷架构1.0版 - all in one，基于spring mvc 的单体应用"></a>信贷架构1.0版 - all in one，基于spring mvc 的单体应用</h2><p>- 单体应用，所有的服务都由一个spring mvc 工程提供</p>
+<p>​    - 好处：排查问题方便，一条链路</p>
+<p>​    - 缺点：涉及到多人维护的时候，并行开发需求不方便；</p>
+<h2 id="信贷架构2-0版-引入基于springboot-dubbo-的微服务架构"><a href="#信贷架构2-0版-引入基于springboot-dubbo-的微服务架构" class="headerlink" title="信贷架构2.0版 - 引入基于springboot + dubbo 的微服务架构"></a>信贷架构2.0版 - 引入基于springboot + dubbo 的微服务架构</h2><blockquote>
+<p> 基于产品流程拆分的服务架构，服务粒度拆的很细，随着产品流程的不断调整，服务职责变得越来越混乱。服务职责定位不清晰，贫血模型，上层服务臃肿，底层服务贫血</p>
+</blockquote>
+<h3 id="暴力拆分服务带来的问题："><a href="#暴力拆分服务带来的问题：" class="headerlink" title="暴力拆分服务带来的问题："></a>暴力拆分服务带来的问题：</h3><ul>
+<li><p>由于服务拆分过细，导致原来能在一个事务中完成的请求被强行拆分到了多个分布式的事物中</p>
+</li>
+<li><p>服务职责定位不清，贫血模型，大部分下层服务都是简单的dao操作，并无实际的业务含义</p>
+</li>
+<li><p>上层服务臃肿，难以维护，而大部分的业务需求又都是针对聚合层的调整，导致这一层改动频繁</p>
+</li>
+<li><p>测试环境服务数量大增，环境管理、部署更新困难</p>
+</li>
+<li><p>服务雪崩：即一个服务挂了，整个调用链路上的所有的服务都会受到影响；</p>
+</li>
+<li><p>大量请求堆积、故障恢复慢：即一个服务慢，卡住了，整个调用链路出现大量超时，要长时间等待慢的服务恢复到正常状态。</p>
+</li>
+<li><p>服务器资源分配困难，服务器机型碎片化：服务多了，各个团队都要申请服务器，要求多样，管理十分困难；</p>
+</li>
+<li><p>微服务框架选型不一，技术无法积累，面向业务定制化严重，上手成本高</p>
+</li>
+<li><p>传统依赖于应用运维的故障排查复杂度高，传统监控服务无法满足需求；</p>
+</li>
+<li><p>API 版本管理混乱，无统一的监控，治理，无开发标准；</p>
+</li>
+<li><p>分布式事务无法有效保证，经常会出现状态一致性问题</p>
+</li>
+</ul>
+<h3 id="解决方案："><a href="#解决方案：" class="headerlink" title="解决方案："></a>解决方案：</h3><ul>
+<li><p>1、微服务框架与开源技术栈统一，将服务治理逻辑抽离、以无侵入方式实现、支持 Spring Cloud、Dubbo 等开源技术栈；</p>
+<ul>
+<li>注册发现 - 引入dubbo monitor 解决dubbo服务发现问题，引入自研http框架解决http</li>
+<li>集中配置中心 - 自研jasmine做集中化的配置中心服务</li>
+<li>服务降级、熔断、限流 - 尚未提供统一的解决方案</li>
+<li>日志聚合 - 引入阿里云SLS 解决</li>
+<li>全链路业务监控 - 基于kafka + influxdb + grafana 的方案解决业务实时监控问题</li>
+<li>服务鉴权 - 对外服务，会统一通过开放平台做认证授权</li>
+<li>服务文档 - 基于swagger + springfox 解决后端服务文档问题</li>
+<li>云上持续集成体系建设 - 尚未解决</li>
+<li>全链路压测系统 - 尚未解决</li>
+</ul>
+</li>
+<li><p>2、链路跟踪，通过日志中的链路ID拉出调用上下文信息，解决定位问题链路太长的问题</p>
+</li>
+<li><p>3、对外服务通过 API 网关暴露，引入 API 管理、测试平台</p>
+</li>
+<li><p>4、实现 TCC 中间件、事务消息队列等标准中间件。基于中间件来保证微服务带来的分布式事务问题。</p>
+</li>
+<li>5、引入kubernetes容器服务，解决服务资源调度、弹性伸缩、故障监控</li>
+</ul>
+<h2 id="信贷架构3-0版-夯实中台和基础平台能力，弱前台"><a href="#信贷架构3-0版-夯实中台和基础平台能力，弱前台" class="headerlink" title="信贷架构3.0版 - 夯实中台和基础平台能力，弱前台"></a>信贷架构3.0版 - 夯实中台和基础平台能力，弱前台</h2><blockquote>
+<p>在2.0版本中，本质上，我们的服务拆分并未并未基于业务沉淀出的领域模型来做。存在划分力度不合理，分层结构不清晰的问题</p>
+</blockquote>
+<h3 id="3-0版本期望解决的问题："><a href="#3-0版本期望解决的问题：" class="headerlink" title="3.0版本期望解决的问题："></a>3.0版本期望解决的问题：</h3><ul>
+<li><p>1、基于特定领域，合理规划服务以及服务的职能</p>
+</li>
+<li><p>2、基于分层架构，弱化前台服务职能，业务逻辑尽可能抽离到中台服务中，强化中台能力</p>
+<p>独立业务中台，业务中台有自己的领域模型，并对上层提供服务。每个业务中台系统具备完整的领域模型，对外暴露的接口服务清晰。服务稳定，不会随着前台系统的迭代而频繁变更</p>
+</li>
+<li><p>3、前台服务可编排，以便快速适应业务流程的调整</p>
+<p>前台系统做到模块化，轻量化，能快速响应业务要求搭建一套新的进件系统。前台业务系统作为中台业务模块的串联层，基于中台业务系统的数据模型传递数据，拿到结果</p>
+</li>
+</ul>
+<blockquote>
+<p>微服务架构设计的瓶颈本质上并不是运维基础设置能力，而且领域设计能力</p>
+</blockquote>
+
+        
+        <br />
+        <div id="comment-container">
+        </div>
+        <div id="disqus_thread"></div>
+
+        <div id="lv-container">
+        </div>
+
+    </div>
+</div>
+
+    </div>
+</div>
+
+
+<footer class="footer">
+    <ul class="list-inline text-center">
+        
+        
+
+        
+
+        
+
+        
+
+        
+
+    </ul>
+    
+    <p>
+        <span id="busuanzi_container_site_pv">
+            <span id="busuanzi_value_site_pv"></span>PV
+        </span>
+        <span id="busuanzi_container_site_uv">
+            <span id="busuanzi_value_site_uv"></span>UV
+        </span>
+</footer>
+
+
+
+
+</body>
+
+<script>
+    // We expose some of the variables needed by the front end
+    window.hexo_search_path = "search.json"
+    window.hexo_root = "/"
+    window.isPost = true
+</script>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script src="/js/index.js"></script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+</html>
